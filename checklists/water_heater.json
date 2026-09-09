@@ -1,0 +1,12 @@
+{
+  "key": "water_heater",
+  "label": "Water heater",
+  "items": [
+    {"key": "clear_path_heater", "label": "Clear path to the water heater", "required": true},
+    {"key": "water_shutoff", "label": "Water shutoff valve is known and accessible", "required": true},
+    {"key": "drain_path", "label": "Drain path is clear for flushing / draining", "required": true},
+    {"key": "adult_present", "label": "Adult (18+) will be present during the visit", "required": true},
+    {"key": "pets_secured", "label": "Pets secured away from work areas", "required": true},
+    {"key": "parking_available", "label": "Parking / access for the crew is available", "required": true}
+  ]
+}

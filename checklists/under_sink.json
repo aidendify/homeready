@@ -1,0 +1,11 @@
+{
+  "key": "under_sink",
+  "label": "Under-sink plumber",
+  "items": [
+    {"key": "cabinet_cleared", "label": "Under-sink cabinet cleared of contents", "required": true},
+    {"key": "water_shutoff", "label": "Water shutoff accessible under the sink", "required": true},
+    {"key": "adult_present", "label": "Adult (18+) will be present during the visit", "required": true},
+    {"key": "pets_secured", "label": "Pets secured away from work areas", "required": true},
+    {"key": "work_area_clear", "label": "Floor / work area around the sink is clear", "required": true}
+  ]
+}

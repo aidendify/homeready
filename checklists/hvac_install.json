@@ -1,0 +1,12 @@
+{
+  "key": "hvac_install",
+  "label": "HVAC install",
+  "items": [
+    {"key": "clear_path_indoor", "label": "Clear path to indoor unit / utility closet", "required": true},
+    {"key": "outdoor_accessible", "label": "Outdoor unit is accessible and clear of clutter", "required": true},
+    {"key": "pets_secured", "label": "Pets secured away from work areas", "required": true},
+    {"key": "adult_present", "label": "Adult (18+) will be present during the visit", "required": true},
+    {"key": "parking_available", "label": "Parking available for the crew truck", "required": true},
+    {"key": "thermostat_access", "label": "Thermostat and electrical panel accessible", "required": true}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "key": "remodel_punch",
+  "label": "Remodel punch / install day",
+  "items": [
+    {"key": "work_area_cleared", "label": "Work area cleared for install / punch list", "required": true},
+    {"key": "valuables_moved", "label": "Valuables and fragile items moved out of the way", "required": true},
+    {"key": "adult_present", "label": "Adult (18+) will be present during the visit", "required": true},
+    {"key": "pets_secured", "label": "Pets secured away from work areas", "required": true},
+    {"key": "parking_access", "label": "Parking and building access OK for the crew", "required": true},
+    {"key": "path_clear", "label": "Path from entry to work area is clear", "required": true}
+  ]
+}
