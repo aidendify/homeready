@@ -152,7 +152,7 @@ def index():
         """
         SELECT * FROM jobs
         WHERE scheduled_date > ? AND status NOT IN ('cancelled')
-        ORDER BY id ASC
+        ORDER BY scheduled_date ASC, id ASC
         LIMIT 30
         """,
         (today,),
