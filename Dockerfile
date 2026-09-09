@@ -13,6 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app.py .
 COPY helpers.py .
 COPY helpers_notify.py .
+COPY helpers_a.py .
+COPY helpers_b.py .
 COPY checklists/ checklists/
 COPY templates/ templates/
 COPY static/ static/
