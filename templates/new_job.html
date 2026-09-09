@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}New job — HomeReady{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="crumb"><a href="{{ url_for('index') }}">Board</a> / New job</p>
+  <h1>New job</h1>
+  <p class="lede">Pick a trade template. Checklist items are snapshotted onto the job.</p>
+</section>
+
+<section class="card">
+  {% if errors %}
+  <ul class="flashes">
+    {% for e in errors %}<li class="flash flash-error">{{ e }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+  <form method="post" class="stack">
+    <label>Trade template
+      <select name="template_key" required>
+        <option value="">Select…</option>
+        {% for key, tpl in templates.items() %}
+        <option value="{{ key }}" {% if form and form.template_key == key %}selected{% endif %}>{{ tpl.label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Customer name *
+      <input name="customer_name" required value="{{ form.customer_name if form else '' }}">
+    </label>
+    <label>Customer email
+      <input type="email" name="customer_email" value="{{ form.customer_email if form else '' }}">
+    </label>
+    <label>Customer phone
+      <input name="customer_phone" value="{{ form.customer_phone if form else '' }}">
+    </label>
+    <label>Job ref
+      <input name="job_ref" value="{{ form.job_ref if form else '' }}">
+    </label>
+    <label>Site label
+      <input name="site_label" placeholder="Address or label (no map)" value="{{ form.site_label if form else '' }}">
+    </label>
+    <label>Scheduled date *
+      <input type="date" name="scheduled_date" required value="{{ form.scheduled_date if form else default_date }}">
+    </label>
+    <label>Start window
+      <input name="start_window" placeholder="e.g. 8am–12pm" value="{{ form.start_window if form else '' }}">
+    </label>
+    <label>Crew emails (comma-separated)
+      <input name="crew_emails" value="{{ form.crew_emails if form else '' }}">
+    </label>
+    <label>Crew phones (comma-separated)
+      <input name="crew_phones" value="{{ form.crew_phones if form else '' }}">
+    </label>
+    <label>Extra note to customer
+      <textarea name="extra_note" rows="3">{{ form.extra_note if form else '' }}</textarea>
+    </label>
+    <label>Internal notes
+      <textarea name="notes" rows="2">{{ form.notes if form else '' }}</textarea>
+    </label>
+    <button class="btn" type="submit">Create job</button>
+  </form>
+</section>
+{% endblock %}

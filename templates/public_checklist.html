@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Prep checklist — {{ business_name }}{% endblock %}
+{% block content %}
+<section class="card public-card">
+  <p class="hint">{{ business_name }}</p>
+  <h1>Home prep checklist</h1>
+  <p class="lede">
+    {{ template_label(job.template_key) }}
+    · {{ format_date_display(job.scheduled_date) }}
+    {% if job.start_window %}· {{ job.start_window }}{% endif %}
+  </p>
+  {% if job.site_label %}
+  <p class="hint">{{ job.site_label }}</p>
+  {% endif %}
+
+  {% if job.status == 'ready' %}
+  <p class="flash flash-ok">Thanks — you're marked <strong>Ready</strong>. We'll see you then.</p>
+  {% elif job.status in ('held', 'not_ready') %}
+  <p class="flash flash-error">We've marked this visit <strong>held</strong>{% if job.hold_reason %}: {{ job.hold_reason }}{% endif %}. The crew will reach out to reschedule.</p>
+  {% elif job.status == 'cancelled' %}
+  <p class="flash flash-error">This visit was cancelled.</p>
+  {% else %}
+
+  {% if error %}
+  <p class="flash flash-error">{{ error }}</p>
+  {% endif %}
+
+  {% if job.extra_note %}
+  <p class="extra-note">{{ job.extra_note }}</p>
+  {% endif %}
+
+  <form method="post" action="{{ url_for('public_ready', token=job.token) }}" class="stack" id="ready-form">
+    <ul class="checklist public-checks">
+      {% for item in items %}
+      <li>
+        <label class="check-row">
+          <input type="checkbox" name="item" value="{{ item.item_key }}"
+            {% if checked and item.item_key in checked %}checked{% endif %}>
+          <span>{{ item.label }}</span>
+        </label>
+      </li>
+      {% endfor %}
+    </ul>
+    <button class="btn btn-ok" type="submit">I'm Ready</button>
+  </form>
+
+  <hr class="sep">
+
+  <form method="post" action="{{ url_for('public_not_ready', token=job.token) }}" class="stack">
+    <label>Not ready? Tell us why *
+      <textarea name="reason" rows="3" required placeholder="e.g. pets not secured"></textarea>
+    </label>
+    <button class="btn btn-danger" type="submit">Not Ready</button>
+  </form>
+  {% endif %}
+
+  {% if business_phone %}
+  <p class="hint">Questions? Call us: {{ business_phone }}</p>
+  {% endif %}
+</section>
+{% endblock %}
