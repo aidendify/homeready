@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Morning board — HomeReady{% endblock %}
+{% block content %}
+<section class="page-head">
+  <h1>Morning board</h1>
+  <p class="lede">Today {{ format_date_display(today) }}. Hold queue frees the slot when the home isn’t ready.</p>
+  <p><a class="btn" href="{{ url_for('new_job') }}">New job</a></p>
+</section>
+
+<section class="card">
+  <h2>Today’s jobs</h2>
+  {% if today_jobs %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Trade</th>
+          <th>Window</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in today_jobs %}
+        <tr>
+          <td><a href="{{ url_for('job_detail', job_id=job.id) }}">{{ job.customer_name }}</a></td>
+          <td>{{ template_label(job.template_key) }}</td>
+          <td>{{ job.start_window or "—" }}</td>
+          <td><span class="badge badge-{{ job.status }}">{{ status_label(job.status) }}</span></td>
+          <td>
+            {% if job.status == 'ready' %}
+              {% if smtp_configured and job.crew_emails %}
+                Crew notified
+              {% else %}
+                <button type="button" class="btn btn-quiet" onclick="copyText({{ crew_ready_blurb(job)|tojson }}, this)">Copy crew blurb</button>
+              {% endif %}
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">No jobs scheduled for today.</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>Hold queue</h2>
+  {% if hold_queue %}
+  <div class="stack">
+    {% for job in hold_queue %}
+    <div class="hold-row">
+      <div>
+        <strong><a href="{{ url_for('job_detail', job_id=job.id) }}">{{ job.customer_name }}</a></strong>
+        <span class="badge badge-held">Held</span>
+        <p class="hint">{{ format_date_display(job.scheduled_date) }} · {{ template_label(job.template_key) }}</p>
+        <p>Reason: {{ job.hold_reason or "—" }}</p>
+      </div>
+      {% set draft = drafts.get(job.id) %}
+      {% if draft %}
+      <div class="copy-fields">
+        <label>Reschedule draft
+          <textarea readonly rows="5">{{ draft[0] }}
+
+{{ draft[1] }}</textarea>
+        </label>
+        <button type="button" class="btn btn-quiet" onclick="copyText(this.previousElementSibling.querySelector('textarea').value, this)">Copy reschedule draft</button>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">No held jobs.</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>Upcoming</h2>
+  {% if upcoming %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Customer</th><th>Trade</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for job in upcoming %}
+        <tr>
+          <td>{{ format_date_display(job.scheduled_date) }}</td>
+          <td><a href="{{ url_for('job_detail', job_id=job.id) }}">{{ job.customer_name }}</a></td>
+          <td>{{ template_label(job.template_key) }}</td>
+          <td><span class="badge badge-{{ job.status }}">{{ status_label(job.status) }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">No upcoming jobs.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}{{ job.customer_name }} — HomeReady{% endblock %}
+{% block content %}
+<section class="page-head">
+  <p class="crumb"><a href="{{ url_for('index') }}">Board</a> / Job #{{ job.id }}</p>
+  <h1>{{ job.customer_name }}</h1>
+  <p class="lede">
+    <span class="badge badge-{{ job.status }}">{{ status_label(job.status) }}</span>
+    · {{ template_label(job.template_key) }}
+    · {{ format_date_display(job.scheduled_date) }}
+    {% if job.start_window %}· {{ job.start_window }}{% endif %}
+  </p>
+</section>
+
+<section class="card">
+  <dl class="facts">
+    <div><dt>Public link</dt><dd><code>{{ public_url }}</code></dd></div>
+    <div><dt>Site</dt><dd>{{ job.site_label or "—" }}</dd></div>
+    <div><dt>Job ref</dt><dd>{{ job.job_ref or "—" }}</dd></div>
+    <div><dt>Send at</dt><dd>{{ job.send_at or "—" }}</dd></div>
+    <div><dt>Email</dt><dd>{{ job.customer_email or "—" }}</dd></div>
+    <div><dt>Phone</dt><dd>{{ job.customer_phone or "—" }}</dd></div>
+  </dl>
+  {% if job.extra_note %}
+  <p><strong>Extra note:</strong> {{ job.extra_note }}</p>
+  {% endif %}
+  {% if job.hold_reason %}
+  <p><strong>Hold reason:</strong> {{ job.hold_reason }}</p>
+  {% endif %}
+
+  <div class="btn-row">
+    {% if job.status == 'scheduled' %}
+    <form method="post" action="{{ url_for('send_now', job_id=job.id) }}">
+      <button class="btn" type="submit">Send checklist now</button>
+    </form>
+    {% endif %}
+    <button type="button" class="btn btn-quiet" onclick="copyText({{ public_url|tojson }}, this)">Copy link</button>
+    <button type="button" class="btn btn-quiet" onclick="copyText({{ copy_blurb|tojson }}, this)">Copy blurb</button>
+    {% if job.status not in ('held', 'cancelled') %}
+    <form method="post" action="{{ url_for('hold_job', job_id=job.id) }}" class="inline-form">
+      <input type="hidden" name="reason" value="Manual hold">
+      <button class="btn btn-quiet" type="submit">Hold</button>
+    </form>
+    {% endif %}
+    {% if job.status != 'cancelled' %}
+    <form method="post" action="{{ url_for('cancel_job', job_id=job.id) }}">
+      <button class="btn btn-danger" type="submit">Cancel</button>
+    </form>
+    {% endif %}
+    {% if job.status not in ('ready', 'cancelled') %}
+    <form method="post" action="{{ url_for('override_ready', job_id=job.id) }}">
+      <button class="btn btn-ok" type="submit">Mark Ready</button>
+    </form>
+    {% endif %}
+    {% if job.status == 'ready' and not smtp_configured %}
+    <button type="button" class="btn btn-quiet" onclick="copyText({{ crew_blurb|tojson }}, this)">Copy crew blurb</button>
+    {% endif %}
+  </div>
+</section>
+
+<section class="card">
+  <h2>Checklist items</h2>
+  <ul class="checklist">
+    {% for item in items %}
+    <li>{% if item.checked %}✓{% else %}○{% endif %} {{ item.label }}{% if item.required %} <span class="hint">(required)</span>{% endif %}</li>
+    {% endfor %}
+  </ul>
+</section>
+
+{% if job.status == 'held' %}
+<section class="card">
+  <h2>Reschedule draft</h2>
+  <p class="hint">Copy and send yourself — HomeReady does not book a calendar.</p>
+  <div class="copy-fields">
+    <label>Subject
+      <input readonly value="{{ reschedule_subject }}">
+    </label>
+    <label>Body
+      <textarea readonly rows="6">{{ reschedule_body }}</textarea>
+    </label>
+    <button type="button" class="btn btn-quiet" onclick="copyText({{ (reschedule_subject ~ '\n\n' ~ reschedule_body)|tojson }}, this)">Copy reschedule draft</button>
+  </div>
+</section>
+{% endif %}
+
+<section class="card">
+  <h2>Timeline</h2>
+  <ul class="timeline">
+    {% for ev in events %}
+    <li>
+      <span class="kind">{{ event_label(ev.kind) }}</span>
+      <span class="at">{{ ev.at }}</span>
+    </li>
+    {% else %}
+    <li class="empty">No events yet.</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}
