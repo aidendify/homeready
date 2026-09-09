@@ -33,7 +33,7 @@
               {% if smtp_configured and job.crew_emails %}
                 Crew notified
               {% else %}
-                <button type="button" class="btn btn-quiet" onclick="copyText({{ crew_ready_blurb(job)|tojson }}, this)">Copy crew blurb</button>
+                <button type="button" class="btn btn-quiet" onclick='copyText({{ crew_ready_blurb(job)|tojson }}, this)'>Copy crew blurb</button>
               {% endif %}
             {% endif %}
           </td>

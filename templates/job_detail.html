@@ -34,8 +34,8 @@
       <button class="btn" type="submit">Send checklist now</button>
     </form>
     {% endif %}
-    <button type="button" class="btn btn-quiet" onclick="copyText({{ public_url|tojson }}, this)">Copy link</button>
-    <button type="button" class="btn btn-quiet" onclick="copyText({{ copy_blurb|tojson }}, this)">Copy blurb</button>
+    <button type="button" class="btn btn-quiet" onclick='copyText({{ public_url|tojson }}, this)'>Copy link</button>
+    <button type="button" class="btn btn-quiet" onclick='copyText({{ copy_blurb|tojson }}, this)'>Copy blurb</button>
     {% if job.status not in ('held', 'cancelled') %}
     <form method="post" action="{{ url_for('hold_job', job_id=job.id) }}" class="inline-form">
       <input type="hidden" name="reason" value="Manual hold">
@@ -53,7 +53,7 @@
     </form>
     {% endif %}
     {% if job.status == 'ready' and not smtp_configured %}
-    <button type="button" class="btn btn-quiet" onclick="copyText({{ crew_blurb|tojson }}, this)">Copy crew blurb</button>
+    <button type="button" class="btn btn-quiet" onclick='copyText({{ crew_blurb|tojson }}, this)'>Copy crew blurb</button>
     {% endif %}
   </div>
 </section>
@@ -71,14 +71,14 @@
 <section class="card">
   <h2>Reschedule draft</h2>
   <p class="hint">Copy and send yourself — HomeReady does not book a calendar.</p>
-  <div class="copy-fields">
+  <div class="copy-fields" id="reschedule-copy">
     <label>Subject
-      <input readonly value="{{ reschedule_subject }}">
+      <input readonly id="reschedule-subject" value="{{ reschedule_subject }}">
     </label>
     <label>Body
-      <textarea readonly rows="6">{{ reschedule_body }}</textarea>
+      <textarea readonly id="reschedule-body" rows="6">{{ reschedule_body }}</textarea>
     </label>
-    <button type="button" class="btn btn-quiet" onclick="copyText({{ (reschedule_subject ~ '\n\n' ~ reschedule_body)|tojson }}, this)">Copy reschedule draft</button>
+    <button type="button" class="btn btn-quiet" onclick="copyText(document.getElementById('reschedule-subject').value + '\n\n' + document.getElementById('reschedule-body').value, this)">Copy reschedule draft</button>
   </div>
 </section>
 {% endif %}
